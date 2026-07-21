@@ -5,6 +5,24 @@ import heroImg from "@/assets/hero.jpg";
 import portraitImg from "@/assets/portrait.jpg";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Janith Silva — Software Engineer" },
+      {
+        name: "description",
+        content:
+          "Portfolio of Janith Silva, a software engineer building solid products with amazing user experiences.",
+      },
+      { property: "og:title", content: "Janith Silva — Software Engineer" },
+      {
+        property: "og:description",
+        content:
+          "Explore Janith Silva's software engineering experience, selected projects, and product work.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Portfolio,
 });
 
