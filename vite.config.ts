@@ -6,10 +6,6 @@ export default defineConfig({
     spa: {
       enabled: true,
     },
-    prerender: {
-      enabled: true,
-      crawlLinks: true,
-      filter: ({ path }: { path: string }) => !path.startsWith("/api"),
-    },
+
   },
 });
