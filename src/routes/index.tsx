@@ -241,21 +241,6 @@ function AnimatedWord({ text, delay = 0 }: { text: string; delay?: number }) {
   );
 }
 
-function Marquee() {
-  const items = ["React", "TypeScript", "GraphQL", "Next.js", "Design Systems", "Node", "Fintech", "UX Engineering"];
-  return (
-    <div className="relative border-y border-border bg-muted/30 py-6 overflow-hidden">
-      <div className="flex w-max animate-marquee gap-16 whitespace-nowrap font-display text-4xl md:text-6xl">
-        {[...items, ...items, ...items].map((t, i) => (
-          <span key={i} className="flex items-center gap-16">
-            <span>{t}</span>
-            <span className="text-accent">✳</span>
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 function SectionHeader({ tag, title, subtitle }: { tag: string; title: string; subtitle?: string }) {
   const ref = useRef(null);
