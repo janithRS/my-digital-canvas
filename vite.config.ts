@@ -1,12 +1,9 @@
-import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-  // GitHub Pages hosts static files only. Disable the Nitro server output
-  // and let TanStack Start emit a client-only SPA bundle.
-  nitro: false,
-  tanstackStart: {
-    spa: {
-      enabled: true,
-    },
-  },
+  plugins: [react(), tailwindcss(), tsconfigPaths()],
+  server: { host: "::", port: 8080 },
 });
