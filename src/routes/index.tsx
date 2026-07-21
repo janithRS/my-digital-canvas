@@ -92,7 +92,6 @@ function Portfolio() {
       <Grain />
       <Nav />
       <Hero />
-      <Marquee />
       <About />
       <Experience />
       <Projects />
