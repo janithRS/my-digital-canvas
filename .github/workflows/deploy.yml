@@ -22,15 +22,27 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
       - run: bun run build
-        env:
-          NITRO_PRESET: static
-      - name: Copy 404 fallback
+      - name: Prepare static output
         run: |
-          if [ -f dist/index.html ]; then cp dist/index.html dist/404.html; fi
-          if [ -f dist/client/index.html ]; then cp dist/client/index.html dist/client/404.html; fi
+          # Locate the built static output (TanStack Start SPA + prerender writes to dist/client or .output/public)
+          if [ -d ".output/public" ]; then
+            OUT=".output/public"
+          elif [ -d "dist/client" ]; then
+            OUT="dist/client"
+          else
+            OUT="dist"
+          fi
+          echo "Using output: $OUT"
+          # 404 fallback so client-side routes resolve on GitHub Pages
+          if [ -f "$OUT/index.html" ] && [ ! -f "$OUT/404.html" ]; then
+            cp "$OUT/index.html" "$OUT/404.html"
+          fi
+          # CNAME for custom domain
+          if [ -f public/CNAME ]; then cp public/CNAME "$OUT/CNAME"; fi
+          echo "OUT_DIR=$OUT" >> $GITHUB_ENV
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: ${{ hashFiles('dist/client/index.html') != '' && 'dist/client' || 'dist' }}
+          path: ${{ env.OUT_DIR }}
 
   deploy:
     needs: build
