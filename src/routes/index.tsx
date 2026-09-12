@@ -78,6 +78,14 @@ const projects = [
 ];
 
 function Portfolio() {
+  const [showScheduler, setShowScheduler] = useState(false);
+
+  useEffect(() => {
+    if (window.location.pathname.replace(/\/+$/, "") === "/meet") {
+      setShowScheduler(true);
+    }
+  }, []);
+
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
       <Grain />
@@ -87,8 +95,18 @@ function Portfolio() {
       <Experience />
       <Projects />
       <Blog />
-      <Contact />
+      <Contact onOpenScheduler={() => setShowScheduler(true)} />
       <Footer />
+      {showScheduler && (
+        <SchedulerModal
+          onClose={() => {
+            setShowScheduler(false);
+            if (window.location.pathname.replace(/\/+$/, "") === "/meet") {
+              window.history.replaceState({}, "", "/");
+            }
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -538,7 +556,9 @@ function Blog() {
   );
 }
 
-function Contact() {
+const GOOGLE_APPOINTMENT_URL = "https://calendar.app.google/PQkpDvU9muJnkMcJA";
+
+function Contact({ onOpenScheduler }: { onOpenScheduler: () => void }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
   return (
@@ -562,18 +582,68 @@ function Contact() {
         >
           Let's build something <em className="italic text-accent">unforgettable.</em>
         </motion.h2>
-        <motion.a
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, delay: 0.4 }}
-          href="mailto:hello@janithsilva.com"
-          className="mt-12 inline-flex items-center gap-4 rounded-full border border-border px-8 py-4 font-mono text-sm uppercase tracking-[0.2em] transition hover:border-accent hover:bg-accent hover:text-accent-foreground"
+          className="mt-12 flex flex-wrap items-center justify-center gap-4"
         >
-          hello@janithsilva.com
-          <span>↗</span>
-        </motion.a>
+          <a
+            href="mailto:hello@janithsilva.com"
+            className="inline-flex items-center gap-4 rounded-full border border-border px-8 py-4 font-mono text-sm uppercase tracking-[0.2em] transition hover:border-accent hover:bg-accent hover:text-accent-foreground"
+          >
+            hello@janithsilva.com
+            <span>↗</span>
+          </a>
+          <button
+            onClick={onOpenScheduler}
+            className="inline-flex items-center gap-4 rounded-full border border-border px-8 py-4 font-mono text-sm uppercase tracking-[0.2em] transition hover:border-accent hover:bg-accent hover:text-accent-foreground"
+          >
+            Schedule a meeting
+            <span>↗</span>
+          </button>
+        </motion.div>
       </div>
     </section>
+  );
+}
+
+function SchedulerModal({ onClose }: { onClose: () => void }) {
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-background/80 p-4 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="relative h-[85vh] w-full max-w-3xl overflow-hidden rounded-2xl border border-border bg-card"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          onClick={onClose}
+          aria-label="Close"
+          className="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition hover:text-foreground"
+        >
+          ✕
+        </button>
+        <iframe
+          src={GOOGLE_APPOINTMENT_URL}
+          title="Schedule a meeting"
+          className="h-full w-full border-0"
+        />
+      </div>
+    </div>
   );
 }
 
