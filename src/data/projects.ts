@@ -23,10 +23,10 @@ export const projects: Project[] = [
   },
   {
     n: "03",
-    name: "Native Flow",
+    name: "By All Means Native",
     desc: "Multilingual communication platform powered by an AI translation engine.",
     stack: ["Next.js", "SignalR", "Mono-repo", "Material UI"],
-    href: "https://native.tech/",
+    href: "https://byallmeans.co/",
   },
   {
     n: "04",
@@ -34,12 +34,5 @@ export const projects: Project[] = [
     desc: "All-in-one platform to develop and manage APIs, integrations, and digital services.",
     stack: ["React", "GraphQL", "MSW", "RXJS", "Swagger UI"],
     href: "https://wso2.com/choreo/",
-  },
-  {
-    n: "05",
-    name: "Diabipal",
-    desc: "Smart mobile app predicting diabetes and cardiovascular disease using ML and OCR.",
-    stack: ["Ionic", "Python", "TensorFlow", "Keras", "Flask"],
-    href: "#",
   },
 ];

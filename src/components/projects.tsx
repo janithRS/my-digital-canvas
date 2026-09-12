@@ -13,10 +13,21 @@ export function Projects() {
           title={`I build, ship, <em class="italic text-muted-foreground">and scale</em>.`}
           subtitle="Real products. Real teams. Real users. A look at projects where strategy, design, and code came together."
         />
-        <div className="space-y-6">
+        <div className="grid gap-6 md:grid-cols-2">
           {projects.map((p, i) => (
             <ProjectCard key={p.name} p={p} index={i} />
           ))}
+        </div>
+        <div className="mt-10 flex justify-end">
+          <a
+            href="https://www.linkedin.com/in/janithrs/"
+            target="_blank"
+            rel="noreferrer"
+            className="group flex items-center gap-3 font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground transition hover:text-accent"
+          >
+            View more projects on LinkedIn
+            <span className="transition group-hover:translate-x-1">↗</span>
+          </a>
         </div>
       </Container>
     </section>
@@ -32,42 +43,21 @@ function ProjectCard({ p, index }: { p: Project; index: number }) {
       href={p.href}
       target="_blank"
       rel="noreferrer"
-      initial={{ opacity: 0, y: 60 }}
+      initial={{ opacity: 0, y: 40 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.8, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative block overflow-hidden rounded-2xl border border-border bg-card p-8 transition hover:border-accent md:p-12"
+      className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-8 transition hover:border-accent md:p-10"
     >
-      <div className="grid grid-cols-12 items-start gap-6">
-        <div className="col-span-2 font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground md:col-span-1">
-          {p.n}
-        </div>
-        <div className="col-span-10 md:col-span-6">
-          <h3 className="font-display text-4xl leading-tight md:text-6xl">
-            <span className="bg-gradient-to-r from-foreground to-foreground bg-[length:0%_1px] bg-left-bottom bg-no-repeat transition-[background-size] duration-700 group-hover:bg-[length:100%_1px]">
-              {p.name}
-            </span>
-          </h3>
-          <p className="mt-3 max-w-md text-muted-foreground">{p.desc}</p>
-        </div>
-        <div className="col-span-12 md:col-span-4 md:pl-8">
-          <div className="mb-3 font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
-            Stack
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {p.stack.map((s) => (
-              <span
-                key={s}
-                className="rounded-full border border-border px-3 py-1 font-mono text-xs text-muted-foreground"
-              >
-                {s}
-              </span>
-            ))}
-          </div>
-        </div>
-        <div className="col-span-12 flex justify-end font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground transition group-hover:text-accent md:col-span-1">
-          <span className="transition group-hover:translate-x-1 group-hover:-translate-y-1">↗</span>
-        </div>
+      <div className="flex items-center justify-between font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
+        {p.n}
+        <span className="transition group-hover:translate-x-1 group-hover:-translate-y-1">↗</span>
       </div>
+      <h3 className="mt-6 font-display text-3xl leading-tight md:text-4xl">
+        <span className="bg-gradient-to-r from-foreground to-foreground bg-[length:0%_1px] bg-left-bottom bg-no-repeat transition-[background-size] duration-700 group-hover:bg-[length:100%_1px]">
+          {p.name}
+        </span>
+      </h3>
+      <p className="mt-3 text-muted-foreground">{p.desc}</p>
     </motion.a>
   );
 }
