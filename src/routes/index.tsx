@@ -1,12 +1,10 @@
 import { motion, useScroll, useTransform, useInView } from "motion/react";
 import { useRef, useEffect, useState } from "react";
 import heroImg from "@/assets/hero.jpg";
-import portraitImg from "@/assets/portrait.jpg";
 
 export default function PortfolioPage() {
   return <Portfolio />;
 }
-
 
 const experiences = [
   {
@@ -79,13 +77,6 @@ const projects = [
   },
 ];
 
-const services = [
-  { n: "01", label: "Front-end Engineering" },
-  { n: "02", label: "Design Systems" },
-  { n: "03", label: "Product UX" },
-  { n: "04", label: "GraphQL & APIs" },
-];
-
 function Portfolio() {
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
@@ -95,7 +86,7 @@ function Portfolio() {
       <About />
       <Experience />
       <Projects />
-      <Services />
+      <Blog />
       <Contact />
       <Footer />
     </div>
@@ -138,6 +129,7 @@ function Nav() {
           <a href="#work" className="transition hover:text-foreground">Work</a>
           <a href="#about" className="transition hover:text-foreground">About</a>
           <a href="#experience" className="transition hover:text-foreground">Experience</a>
+          <a href="#blog" className="transition hover:text-foreground">Blog</a>
           <a href="#contact" className="transition hover:text-foreground">Contact</a>
         </nav>
         <a
@@ -287,24 +279,7 @@ function About() {
         title={`A curious builder who <em class="italic text-muted-foreground">ships</em>.`}
       />
       <div className="grid gap-12 md:grid-cols-12">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.9, delay: 0.2 }}
-          className="md:col-span-5"
-        >
-          <div className="relative overflow-hidden rounded-lg border border-border">
-            <img
-              src={portraitImg}
-              alt="Janith Silva"
-              width={900}
-              height={1100}
-              loading="lazy"
-              className="w-full grayscale"
-            />
-          </div>
-        </motion.div>
-        <div className="md:col-span-7 md:pl-8">
+        <div className="md:col-span-12">
           <motion.p
             initial={{ opacity: 0, y: 30 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -468,35 +443,95 @@ function ProjectCard({ p, index }: { p: (typeof projects)[number]; index: number
   );
 }
 
-function Services() {
+const MEDIUM_FEED_URL = "https://medium.com/feed/@janithrs";
+const MEDIUM_PROFILE_URL = "https://medium.com/@janithrs";
+
+type BlogPost = { title: string; link: string; pubDate: string; excerpt: string };
+
+function Blog() {
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [status, setStatus] = useState<"loading" | "done" | "error">("loading");
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
+
+  useEffect(() => {
+    fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(MEDIUM_FEED_URL)}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status !== "ok" || !Array.isArray(data.items)) throw new Error("Feed unavailable");
+        setPosts(
+          data.items.slice(0, 3).map((item: any) => ({
+            title: item.title,
+            link: item.link,
+            pubDate: item.pubDate,
+            excerpt: String(item.description ?? "")
+              .replace(/<[^>]+>/g, "")
+              .trim()
+              .slice(0, 140),
+          })),
+        );
+        setStatus("done");
+      })
+      .catch(() => setStatus("error"));
+  }, []);
+
+  if (status === "error" || (status === "done" && posts.length === 0)) return null;
+
   return (
-    <section className="border-t border-border">
+    <section id="blog" className="border-t border-border">
       <div className="mx-auto max-w-[1600px] px-6 py-32 md:px-10 md:py-48">
         <SectionHeader
-          tag="What I do"
-          title={`Front-end, product, <em class="italic text-muted-foreground">&amp; craft.</em>`}
+          tag="Writing"
+          title={`Thoughts, notes, <em class="italic text-muted-foreground">& essays.</em>`}
+          subtitle="Occasional writing on engineering, product, and craft — published on Medium."
         />
-        <div ref={ref} className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-2 lg:grid-cols-4">
-          {services.map((s, i) => (
-            <motion.div
-              key={s.n}
-              initial={{ opacity: 0, y: 30 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              className="group relative aspect-square bg-background p-8 transition hover:bg-muted/40"
-            >
-              <div className="font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground">
-                {s.n}
-              </div>
-              <div className="absolute bottom-8 left-8 right-8">
-                <div className="font-display text-3xl leading-tight transition group-hover:text-accent md:text-4xl">
-                  {s.label}
-                </div>
-              </div>
-            </motion.div>
-          ))}
+        <div ref={ref} className="grid gap-6 md:grid-cols-3">
+          {status === "loading"
+            ? Array.from({ length: 3 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-64 animate-pulse rounded-2xl border border-border bg-card"
+                />
+              ))
+            : posts.map((post, i) => (
+                <motion.a
+                  key={post.link}
+                  href={post.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={inView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.6, delay: i * 0.1 }}
+                  className="group flex flex-col rounded-2xl border border-border bg-card p-8 transition hover:border-accent"
+                >
+                  <div className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                    {new Date(post.pubDate).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </div>
+                  <h3 className="mt-4 font-display text-2xl leading-tight transition group-hover:text-accent">
+                    {post.title}
+                  </h3>
+                  <p className="mt-3 text-sm text-muted-foreground">{post.excerpt}…</p>
+                  <div className="mt-6 flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground transition group-hover:text-accent">
+                    Read on Medium
+                    <span className="transition group-hover:translate-x-1 group-hover:-translate-y-1">↗</span>
+                  </div>
+                </motion.a>
+              ))}
+        </div>
+        <div className="mt-12 text-center">
+          <a
+            href={MEDIUM_PROFILE_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 font-mono text-xs uppercase tracking-[0.2em] transition hover:border-accent hover:text-accent"
+          >
+            View all posts on Medium
+            <span>↗</span>
+          </a>
         </div>
       </div>
     </section>
