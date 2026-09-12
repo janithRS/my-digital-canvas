@@ -18,7 +18,7 @@ export function Blog() {
         <SectionHeader
           tag="Writing"
           title={`Thoughts, notes, <em class="italic text-muted-foreground">& essays.</em>`}
-          subtitle="Occasional writing on engineering, product, and craft — published on Medium."
+          subtitle="Occasional writing on engineering, product, and craft, published on Medium."
         />
         <div ref={ref} className="grid gap-6 md:grid-cols-3">
           {status === "loading"

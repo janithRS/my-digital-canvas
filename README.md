@@ -1,4 +1,4 @@
-# Janith Silva — Portfolio
+# Janith Silva Portfolio
 
 Personal portfolio site, deployed to [janithsilva.com](https://janithsilva.com) via GitHub Pages.
 

@@ -26,9 +26,10 @@ export function About() {
           transition={{ duration: 0.8, delay: 0.3 }}
           className="font-display text-3xl leading-[1.15] text-balance md:text-4xl"
         >
-          I'm a software engineer with a background in design — obsessed with the details that make
-          interfaces feel <em className="italic text-accent">effortless</em>. I've spent the last
-          decade shipping fintech, payroll, and developer tools used by teams worldwide.
+          I'm a senior software engineer who thinks in systems: obsessed with getting the
+          architecture <em className="italic text-accent">right</em>, from data model and API
+          contracts to the UI that sits on top. I've spent the last decade building full-stack
+          platforms for fintech, payroll, and developer tools used by teams worldwide.
         </motion.p>
         <motion.div
           initial={{ opacity: 0 }}
